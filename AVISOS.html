@@ -6,30 +6,47 @@
     <style>
         body { font-family: sans-serif; background: #050505; color: #e0e0e0; padding: 20px; }
         .card { background: #0f0f0f; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; }
+        h1 { color: #fff; }
     </style>
 </head>
 <body>
+
     <h1>Avisos Rolox</h1>
     <div id="lista-avisos">Carregando...</div>
 
     <script>
-        // COLOQUE O SEU ID ENTRE AS ASPAS ABAIXO
+        // Configurações do seu projeto
         const ID_PROJETO = 'ihtakgynlqspapccuwur'; 
-        const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*`;
+        const ANON_KEY = 'sb_publishable_O36ZmshM46GuTAaiUhW6TQ_iO-RhGKi';
+        const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*&order=data_criacao.desc`;
 
         async function carregar() {
             try {
-                const response = await fetch(URL);
-                if (!response.ok) throw new Error('Status: ' + response.status);
+                const response = await fetch(URL, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': ANON_KEY,
+                        'Authorization': `Bearer ${ANON_KEY}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erro de conexão: ' + response.status);
                 
                 const data = await response.json();
+                
                 document.getElementById('lista-avisos').innerHTML = data.length > 0 
-                    ? data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('')
+                    ? data.map(a => `
+                        <div class="card">
+                            <h3>${a.titulo}</h3>
+                            <p>${a.conteudo}</p>
+                        </div>
+                    `).join('')
                     : "Nenhum aviso encontrado.";
             } catch (err) {
                 document.getElementById('lista-avisos').innerHTML = "ERRO: " + err.message;
             }
         }
+
         carregar();
     </script>
 </body>
