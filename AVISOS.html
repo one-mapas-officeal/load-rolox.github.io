@@ -8,13 +8,15 @@
         .card { background: #0f0f0f; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; text-align: left; max-width: 600px; margin: 15px auto; }
         #status-msg { color: #ff3333; font-weight: bold; margin-bottom: 20px; font-size: 1.2em; }
         #contador-fake { color: #00ff00; font-size: 1.1em; margin-bottom: 10px; font-weight: bold; }
+        #fila { color: #ffcc00; font-size: 1.3em; margin: 20px 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <h1>Avisos Rolox</h1>
     <div id="contador-fake">Usuários online: 100.000.000.000.000.000</div>
-    <div id="status-msg">Oops, os nossos servidores estão quase explodindo...</div>
+    <div id="status-msg"></div>
+    <div id="fila"></div>
     <div id="lista-avisos"></div>
 
     <script>
@@ -23,38 +25,44 @@
         const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*&order=data_criacao.desc`;
         
         let usuarios = 100000000000000000;
+        let dadosCarregados = "";
 
-        // Contador de pessoas entrando (aumenta 1.000 a cada segundo)
+        // Contador de pessoas online
         setInterval(() => {
             usuarios += 1000;
             document.getElementById('contador-fake').innerText = "Usuários online: " + usuarios.toLocaleString('pt-BR');
         }, 1000);
 
-        async function carregar() {
-            try {
-                // Mensagem de "quase explodindo" dura 4 segundos
-                setTimeout(() => {
-                    document.getElementById('status-msg').innerText = "Servidores Estabilizados. Confira as novidades:";
-                    document.getElementById('status-msg').style.color = "#00ff00";
-                }, 4000);
-
-                const response = await fetch(URL, {
-                    headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` }
-                });
-                
-                const data = await response.json();
-                
-                // Exibe os dados após a estabilização
-                document.getElementById('lista-avisos').innerHTML = data.length > 0 
-                    ? data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('')
-                    : "Nenhum aviso encontrado.";
-                
-            } catch (err) {
-                document.getElementById('status-msg').innerText = "Erro ao acessar servidores.";
-            }
+        async function buscarDados() {
+            const response = await fetch(URL, {
+                headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` }
+            });
+            const data = await response.json();
+            dadosCarregados = data.length > 0 
+                ? data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('')
+                : "Nenhum aviso encontrado.";
         }
 
-        carregar();
+        function mostrarFila() {
+            let numPessoas = Math.floor(Math.random() * 50000) + 1;
+            let tempo = Math.floor(Math.random() * 5) + 3; // 3 a 7 segundos
+            
+            document.getElementById('status-msg').innerText = "Oops, os nossos servidores estão quase explodindo...";
+            document.getElementById('fila').innerText = `Fila de espera: ${numPessoas.toLocaleString()} pessoas à sua frente. Tempo médio: ${tempo} segundos.`;
+            document.getElementById('lista-avisos').innerHTML = "";
+
+            setTimeout(() => {
+                document.getElementById('status-msg').innerText = "Servidores Estabilizados. Confira as novidades:";
+                document.getElementById('status-msg').style.color = "#00ff00";
+                document.getElementById('fila').innerText = "";
+                document.getElementById('lista-avisos').innerHTML = dadosCarregados;
+            }, tempo * 1000);
+        }
+
+        // Início
+        buscarDados();
+        mostrarFila();
+        setInterval(mostrarFila, 15000); // Ciclo de 15s para repetir a fila
     </script>
 </body>
 </html>
