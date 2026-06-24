@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Avisos Rolox</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <h1>Avisos Rolox</h1>
+    <div id="lista-avisos">Carregando...</div>
+
+    <script>
+        // Apenas a URL. Nada de chaves.
+        const URL = 'https://ihtakgynlqspapccuwur.supabase.co/rest/v1/avisos?select=*&order=data_criacao.desc';
+
+        async function carregar() {
+            try {
+                const response = await fetch(URL);
+                const data = await response.json();
+                
+                document.getElementById('lista-avisos').innerHTML = data.map(a => `
+                    <div class="card">
+                        <h3>${a.titulo}</h3>
+                        <p>${a.conteudo}</p>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('lista-avisos').innerText = "Erro na conexão.";
+            }
+        }
+
+        carregar();
+    </script>
+</body>
+</html>
