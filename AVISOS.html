@@ -13,23 +13,21 @@
     <div id="lista-avisos">Carregando...</div>
 
     <script>
-        // Use APENAS o ID do seu projeto aqui
-        const PROJETO_ID = 'ihtakgynlqspapccuwur'; 
-const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*`;
+        // COLOQUE O SEU ID ENTRE AS ASPAS ABAIXO
+        const ID_PROJETO = 'ihtakgynlqspapccuwur'; 
+        const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*`;
 
         async function carregar() {
             try {
-                // Fetch sem nenhum header, puro e simples
                 const response = await fetch(URL);
                 if (!response.ok) throw new Error('Status: ' + response.status);
                 
                 const data = await response.json();
-                
                 document.getElementById('lista-avisos').innerHTML = data.length > 0 
                     ? data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('')
                     : "Nenhum aviso encontrado.";
             } catch (err) {
-                document.getElementById('lista-avisos').innerHTML = "ERRO: " + err.message + "<br>Verifique o ID do projeto no código.";
+                document.getElementById('lista-avisos').innerHTML = "ERRO: " + err.message;
             }
         }
         carregar();
