@@ -6,27 +6,24 @@
     <style>
         body { font-family: sans-serif; background: #050505; color: #e0e0e0; padding: 20px; text-align: center; }
         .card { background: #0f0f0f; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; text-align: left; max-width: 600px; margin: 15px auto; }
-        #status-msg { color: #ff3333; font-weight: bold; margin-bottom: 20px; font-size: 1.2em; }
-        #contador-fake { color: #00ff00; font-size: 1.1em; margin-bottom: 5px; }
-        #cronometro { color: #ff3333; font-size: 1.2em; font-weight: bold; margin-bottom: 20px; }
-        #fila { color: #ffcc00; font-size: 1.1em; margin: 10px 0; }
+        #cronometro { color: #ff3333; font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
+        #contador-fake { color: #00ff00; font-size: 1.1em; margin-bottom: 20px; }
+        h1 { color: #fff; }
     </style>
 </head>
 <body>
 
     <h1>Avisos Rolox</h1>
-    <div id="cronometro">Carregando tempo para o Preview...</div>
+    <div id="cronometro">Carregando cronômetro...</div>
     <div id="contador-fake">Usuários online: 100.000.000.000.000.000</div>
-    <div id="status-msg"></div>
-    <div id="fila"></div>
-    <div id="lista-avisos"></div>
+    <div id="lista-avisos">Carregando notícias...</div>
 
     <script>
         const ID_PROJETO = 'ihtakgynlqspapccuwur'; 
         const ANON_KEY = 'sb_publishable_O36ZmshM46GuTAaiUhW6TQ_iO-RhGKi';
         const URL = `https://${ID_PROJETO}.supabase.co/rest/v1/avisos?select=*&order=data_criacao.desc`;
         
-        // Cronômetro solicitado
+        // 1. Cronômetro
         const targetDate = new Date('2026-12-01T00:00:00').getTime();
         function atualizarCronometro() {
             const now = new Date().getTime();
@@ -38,24 +35,32 @@
             document.getElementById('cronometro').innerHTML = `Lançamento: ${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
         setInterval(atualizarCronometro, 1000);
+        atualizarCronometro();
 
+        // 2. Contador de usuários
         let usuarios = 100000000000000000;
         setInterval(() => {
             usuarios += 1000;
             document.getElementById('contador-fake').innerText = "Usuários online: " + usuarios.toLocaleString('pt-BR');
         }, 1000);
 
-        async function carregar() {
-            const response = await fetch(URL, { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } });
-            const data = await response.json();
-            return data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('');
+        // 3. Carregar notícias
+        async function carregarNoticias() {
+            try {
+                const response = await fetch(URL, { 
+                    headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } 
+                });
+                const data = await response.json();
+                
+                document.getElementById('lista-avisos').innerHTML = data.length > 0 
+                    ? data.map(a => `<div class="card"><h3>${a.titulo}</h3><p>${a.conteudo}</p></div>`).join('')
+                    : "Nenhum aviso encontrado.";
+            } catch (err) {
+                document.getElementById('lista-avisos').innerText = "Erro ao carregar notícias.";
+            }
         }
 
-        async function cicloInstabilidade() {
-            const avisos = await carregar();
-            
-
-        cicloInstabilidade();
+        carregarNoticias();
     </script>
 </body>
 </html>
