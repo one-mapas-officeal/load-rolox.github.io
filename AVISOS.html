@@ -54,23 +54,7 @@
         async function cicloInstabilidade() {
             const avisos = await carregar();
             
-            // Sorteia se vai dar "Oops" ou "Erro 404"
-            let tipoErro = Math.random() > 0.5 ? "Oops, servidores sobrecarregados..." : "Erro 404: Site não encontrado. Tentando reconectar ao servidor...";
-            let numPessoas = Math.floor(Math.random() * 50000) + 1;
-            
-            document.getElementById('status-msg').innerText = tipoErro;
-            document.getElementById('fila').innerText = `Fila de espera: ${numPessoas.toLocaleString()} pessoas.`;
-            document.getElementById('lista-avisos').innerHTML = "";
-            
-            setTimeout(() => {
-                document.getElementById('status-msg').innerText = "Servidores Estabilizados.";
-                document.getElementById('status-msg').style.color = "#00ff00";
-                document.getElementById('fila').innerText = "";
-                document.getElementById('lista-avisos').innerHTML = avisos;
-            }, 5000);
-        }
 
-        setInterval(cicloInstabilidade, 12000);
         cicloInstabilidade();
     </script>
 </body>
