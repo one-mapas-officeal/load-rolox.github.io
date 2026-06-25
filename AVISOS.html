@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <title class="notranslate">Avisos Rolox</title>
     
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pt',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
+                autoDisplay: true
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <style>
         body { font-family: sans-serif; background: #050505; color: #e0e0e0; padding: 20px; text-align: center; }
+        
+        /* Estilização do seletor para garantir que ele apareça */
+        #google_translate_element { margin: 20px auto; padding: 10px; background: #222; display: inline-block; border-radius: 5px; }
+        
         .card { background: #0f0f0f; padding: 20px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; text-align: left; max-width: 600px; margin: 15px auto; }
         #cronometro { color: #ff3333; font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
         #contador-fake { color: #00ff00; font-size: 1.1em; margin-bottom: 20px; }
-        .notranslate { display: inline-block; }
+        h1 { color: #fff; }
     </style>
 </head>
 <body>
@@ -29,7 +33,7 @@
 
     <h1 class="notranslate">Avisos Rolox</h1>
     
-    <div id="cronometro">Carregando cronômetro...</div>
+    <div id="cronometro">Carregando...</div>
     <div id="contador-fake">Usuários online: 100.000.000.000.000.000</div>
     
     <div id="lista-avisos">Carregando notícias...</div>
