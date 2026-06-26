@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Carregando Base Rolox...</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #loader { text-align: center; }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <h1 id="status-text">Verificando base de dados...</h1>
+</div>
+
+<script>
+async function carregarBase() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const numero = urlParams.get('numero');
+
+    // 1. Caso o número não tenha sido escolhido ou seja 0
+    if (!numero || numero === '0') {
+        document.getElementById('status-text').innerHTML = "Base não selecionada. Redirecionando...";
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+    }
+
+    // 2. Tenta conectar à base
+    try {
+        const urlBase = `https://raw.githubusercontent.com/one-mapas-officeal/rolox.database.${numero}.github.io/refs/heads/main/lodas/reset/v1/lodas.reset.v1.ex.load.html`;
+        
+        // Verifica se a página existe (Fetch)
+        const response = await fetch(urlBase, { method: 'HEAD' });
+
+        if (response.ok) {
+            // Se existe, limpa a tela inteira e carrega o conteúdo
+            const conteudo = await fetch(urlBase).then(res => res.text());
+            document.open();
+            document.write(conteudo);
+            document.close();
+        } else {
+            document.getElementById('status-text').innerHTML = "Erro: Base de dados não encontrada.";
+        }
+    } catch (error) {
+        document.getElementById('status-text').innerHTML = "Erro de conexão ao servidor.";
+    }
+}
+
+// Inicia o processo
+carregarBase();
+</script>
+
+</body>
+</html>
